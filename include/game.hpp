@@ -1,14 +1,13 @@
 #pragma once
-#include <iostream>
 #include <vector>
 
 #include <SDL2/SDL.h>
 
 class grid {
     private:
+        grid *nextState = NULL, *previousState = NULL;
         std::vector<std::vector<bool>> cells;
-        //int height = 16384, width = 16384;
-        int height = 16, width = 16;
+        int height = 256, width = 256;
 
     public:
         grid(int width, int height);
@@ -20,11 +19,15 @@ class grid {
          */
         std::vector<std::vector<bool>> getNextBoardState();
         
+        grid* moveForward();
+        grid* moveBackward();
+        
         /**
          * Setter for cells.
          * @param newCells - New value for board.
          */
         void overrideGrid(std::vector<std::vector<bool>> newCells, int height, int width);
+        void resetBoard();
 
         int getHeight() { return height; }
         int getWidth() { return width; }

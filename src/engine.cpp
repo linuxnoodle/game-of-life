@@ -7,7 +7,8 @@ grid *workingBoard;
 int screenWidth, screenHeight, cellHorizontalSize = 20, cellVerticalSize = 20;
 int mouseX = 0, mouseY = 0;
 float verticalOffset = 0, horizontalOffset = 0, movementSpeed = 3;
-bool isRunning = true, isDarkmode = false;
+uint64_t startTime, currentTime;
+bool isRunning = true, isDarkmode = false, isAutoplay = false;
 
 template <typename T>
 T boundaryAdd(T a, T b, T maximumValue, T minimumValue){
@@ -55,40 +56,59 @@ void update(float deltaTime){
     switch (event.type){
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym){
-                case SDLK_ESCAPE:
+                case SDLK_ESCAPE: {
                     isRunning = false;
                     break;
-                case SDLK_w:
-                case SDLK_UP:
+                }
+                case SDLK_w: {
                     verticalOffset += movementSpeed * deltaTime;
                     break;
-                case SDLK_s:
-                case SDLK_DOWN:
+                }
+                case SDLK_s: {
                     verticalOffset -= movementSpeed * deltaTime;
                     break;
-                case SDLK_a:
-                case SDLK_LEFT:
+                }
+                case SDLK_a: {
                     horizontalOffset += movementSpeed * deltaTime;
                     break;
-                case SDLK_d:
-                case SDLK_RIGHT:
+                }
+                case SDLK_d: {
                     horizontalOffset -= movementSpeed * deltaTime;
                     break;
-                case SDLK_EQUALS:
-                case SDLK_PLUS:
+                }
+                case SDLK_UP: {
                     cellVerticalSize = boundaryAdd(cellVerticalSize, 5, 150, 2);
                     cellHorizontalSize = boundaryAdd(cellHorizontalSize, 5, 150, 2);
                     break;
-                case SDLK_MINUS:
-                case SDLK_UNDERSCORE:
+                }
+                case SDLK_DOWN: {
                     cellVerticalSize = boundaryAdd(cellVerticalSize, -5, 150, 2);
                     cellHorizontalSize = boundaryAdd(cellHorizontalSize, -5, 150, 2);
                     break;
+                }
+                case SDLK_RIGHT: {
+                    workingBoard = workingBoard->moveForward(); 
+                    break;
+                }
+                case SDLK_LEFT: {
+                    workingBoard = workingBoard->moveBackward();
+                    break;
+                }
+                case SDLK_BACKSPACE: {
+                    workingBoard->resetBoard();
+                    break;
+                }
+                case SDLK_SPACE: {
+                    isAutoplay = !isAutoplay; 
+                    isAutoplay && (startTime = SDL_GetPerformanceCounter());
+                    break;
+                }
             }
             break;
         case SDL_MOUSEBUTTONDOWN:
             if (event.button.button == SDL_BUTTON_LEFT){
                 if (mouseX > horizontalOffset && mouseX < horizontalOffset + (cellHorizontalSize * workingBoard->getWidth()) && mouseY > verticalOffset && mouseY < verticalOffset + (cellVerticalSize * workingBoard->getHeight())){
+                    // Gets index of the cell that the mouse presses.
                     int posX = ((mouseX - horizontalOffset) - fmod((mouseX - horizontalOffset), cellHorizontalSize)) / cellHorizontalSize, posY = ((mouseY - verticalOffset) - (fmod(mouseY - verticalOffset, cellVerticalSize))) / cellVerticalSize;
                     (*workingBoard->getCells())[posY][posX] = !(*workingBoard->getCells())[posY][posX];
                 }
@@ -98,6 +118,12 @@ void update(float deltaTime){
             mouseX = event.motion.x;
             mouseY = event.motion.y;
             break;
+    }
+    
+    currentTime = SDL_GetPerformanceCounter();
+    if (isAutoplay && (currentTime - startTime) / static_cast<float>(SDL_GetPerformanceFrequency()) >= 0.3){
+        startTime = currentTime;
+        workingBoard = workingBoard->moveForward();
     }
 }
 
@@ -131,6 +157,7 @@ void drawCells(){
     for (long unsigned int i = 0; i < boardCells.size(); ++i){
         for (long unsigned int j = 0; j < boardCells[i].size(); ++j){
             if (boardCells[i][j]){
+
                 SDL_Rect rect;
 
                 rect.x = j * cellHorizontalSize + horizontalOffset;

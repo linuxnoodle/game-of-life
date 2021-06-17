@@ -9,10 +9,6 @@ grid::grid(int width, int height){
 }
 
 grid::grid(){
-    //this->height = 16384;
-    //this->width = 16384;
-    this->height = 16;
-    this->width = 16;
     cells.resize(height);
     for (int i = 0; i < height; ++i)
         cells[i].resize(width);
@@ -36,8 +32,8 @@ std::vector<std::vector<bool>> grid::getNextBoardState(){
                 + ((i != height - 1 && j != 0) && cells[i + 1][j - 1]) // bottom-left
                 + ((i != height - 1) && cells[i + 1][j]) // bottom-center
                 + ((i != height - 1 && j != width - 1) && cells[i + 1][j + 1]); // bottom-right
-            
-            if (cells[i][j] && (neighborSum != 2 || neighborSum != 3)){
+
+            if (cells[i][j] && (neighborSum != 2 && neighborSum != 3)){
                 nextState[i][j] = false;
             } else if (!cells[i][j] && neighborSum == 3){
                 nextState[i][j] = true;
@@ -48,6 +44,31 @@ std::vector<std::vector<bool>> grid::getNextBoardState(){
     }
 
     return nextState;
+}
+
+void grid::resetBoard(){
+    std::vector<std::vector<bool>> newCells(height, std::vector<bool>(width, false));
+    this->overrideGrid(newCells, height, width);
+    this->nextState = NULL;
+    this->previousState = NULL;
+}
+
+grid* grid::moveForward(){
+    grid *nextGrid = new grid(width, height);
+    nextGrid->overrideGrid(getNextBoardState(), height, width);
+
+    this->nextState = nextGrid;
+    nextGrid->previousState = this;
+    
+    return nextGrid;
+}
+
+grid* grid::moveBackward(){
+    if (this->previousState != NULL){
+        return this->previousState;
+    } else {
+        return this;
+    }
 }
 
 /**
