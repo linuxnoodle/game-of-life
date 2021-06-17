@@ -7,7 +7,7 @@ grid::grid(int width, int height){
     for (int i = 0; i < height; ++i)
         cells[i].resize(width);
 }
-        
+
 grid::grid(){
     //this->height = 16384;
     //this->width = 16384;

@@ -10,8 +10,12 @@
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_log.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_mouse.h>
 #include <cstdlib>
 #include <cstdint>
+#include <ctgmath>
 
 extern bool isRunning;
 
@@ -23,12 +27,12 @@ extern bool isRunning;
  * @param darkmode - Changes color scheme.
  * @param board - Board from which data is displayed.
  */
-void init(int width, int height, bool fullscreen, bool darkmode, grid &board);
+void init(int width, int height, bool fullscreen, bool darkmode, grid *board);
 
 /**
  * Updates entities.
- * @param frameTime - Delay between frames, used to make movement framerate-independent.
+ * @param deltaTime - Delay between frames, used to make movement framerate-independent.
  */
-void update(int frameTime);
+void update(float deltaTime);
 void render();
 void clean();

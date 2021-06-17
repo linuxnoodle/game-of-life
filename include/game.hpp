@@ -28,4 +28,5 @@ class grid {
 
         int getHeight() { return height; }
         int getWidth() { return width; }
+        std::vector<std::vector<bool>> *getCells() { return &cells; }
 };

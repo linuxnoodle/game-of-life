@@ -1,36 +1,42 @@
 #include "../include/game.hpp"
 #include "../include/engine.hpp"
-#include "../include/imageprocessing.hpp"
-#include <SDL2/SDL_timer.h>
 
-#define FPS_COUNTER 1
+#define FPS_COUNTER 0 
 
 int main(){
-    Uint32 frameTimeStart, frameTime = 0;
+    Uint64 currentTime = SDL_GetPerformanceCounter(), previousTime = 0;
+    float deltaTime = 0;
 
     // Initializes grid with default constructor.
-    grid board;
+    grid *board = new grid();
+   
+    // Testing code for displaying.
+    /*std::vector<std::vector<bool>> newCells = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}
+    };
+
+    board.overrideGrid(newCells, 3, 3);*/
 
     // Initializes SDL2.
-    init(1280, 720, false, true, board);
+    init(1280, 720, false, false, board);
 
     while (isRunning){
-        frameTimeStart = SDL_GetTicks();
-        
-        #ifdef FPS_COUNTER
-            Uint64 start = SDL_GetPerformanceCounter();
-        #endif
+        previousTime = currentTime;
+        currentTime = SDL_GetPerformanceCounter();
 
-        update(frameTime);
+        deltaTime = static_cast<float>((currentTime - previousTime) * 1000) / SDL_GetPerformanceFrequency();
+
+        update(deltaTime);
         render();
     
-        #ifdef FPS_COUNTER
-            Uint64 end = SDL_GetPerformanceCounter();
-            SDL_Log("FPS: %f", static_cast<float>(SDL_GetPerformanceFrequency()) / (end - start));
+        #if FPS_COUNTER == 1
+            Uint64 endTime = SDL_GetPerformanceCounter();
+            SDL_Log("FPS: %f", static_cast<float>(SDL_GetPerformanceFrequency()) / (endTime - currentTime));
         #endif
-
-        frameTime = SDL_GetTicks() - frameTimeStart;
     }
 
     clean();
+    delete board;
 }
