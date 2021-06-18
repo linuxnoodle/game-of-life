@@ -20,7 +20,7 @@ int main(){
     board.overrideGrid(newCells, 3, 3);*/
 
     // Initializes SDL2.
-    init(640, 480, false, false, board);
+    init(1280, 720, false, false, board);
 
     while (isRunning){
         previousTime = currentTime;

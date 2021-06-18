@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
-
-#include <SDL2/SDL.h>
+#include <cstddef>
 
 class grid {
     private:

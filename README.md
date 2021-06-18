@@ -28,4 +28,6 @@ make
 - [X] Allow the user to traverse to the next state, and to the previous states. (probably will finally use a doubly-linked list)
 - [X] Autoplay.
 - [X] Darkmode.
+- [ ] Zoom in on the center instead of on the top-left corner.
+- [ ] Further optimizations for runtime. (possibly using an opengl texture for the grid?)
 

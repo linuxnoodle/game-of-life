@@ -14,7 +14,7 @@ template <typename T>
 T boundaryAdd(T a, T b, T maximumValue, T minimumValue){
     if (((b > 0) && (a > (maximumValue - b)))){
         return maximumValue;        
-    } else if ((b < 0) && (a < (minimumValue - b))){
+    } else if ((b < 0) && (a < (minimumValue - b))) {
         return minimumValue;
     } else {
         return a + b;
@@ -79,11 +79,15 @@ void update(float deltaTime){
                 case SDLK_UP: {
                     cellVerticalSize = boundaryAdd(cellVerticalSize, 5, 150, 2);
                     cellHorizontalSize = boundaryAdd(cellHorizontalSize, 5, 150, 2);
+                    verticalOffset *= static_cast<float>(cellVerticalSize) / boundaryAdd(cellVerticalSize, -5, 150, 2);
+                    horizontalOffset *= static_cast<float>(cellHorizontalSize) / boundaryAdd(cellHorizontalSize, -5, 150, 2);
                     break;
                 }
                 case SDLK_DOWN: {
                     cellVerticalSize = boundaryAdd(cellVerticalSize, -5, 150, 2);
                     cellHorizontalSize = boundaryAdd(cellHorizontalSize, -5, 150, 2);
+                    verticalOffset = (verticalOffset * static_cast<float>(cellVerticalSize) / boundaryAdd(cellVerticalSize, 5, 150, 2)) + (screenHeight * 0.5);
+                    horizontalOffset = (horizontalOffset * static_cast<float>(cellHorizontalSize) / boundaryAdd(cellHorizontalSize, 5, 150, 2) + (screenWidth * 0.5));
                     break;
                 }
                 case SDLK_RIGHT: {
