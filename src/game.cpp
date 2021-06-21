@@ -47,13 +47,14 @@ grid* grid::getNextBoardState(){
         }
     }
 
-    nextGrid->overrideGrid(nextState, height, width);
+    nextGrid->overrideGrid(nextState, nextGrid->activeCells, height, width);
     return nextGrid;
 }
 
 void grid::resetBoard(){
     std::vector<std::vector<bool>> newCells(height, std::vector<bool>(width, false));
-    this->overrideGrid(newCells, height, width);
+    std::vector<activeCell> newActiveCells;
+    this->overrideGrid(newCells, newActiveCells, height, width);
     this->nextState = NULL;
     this->previousState = NULL;
 }
@@ -80,16 +81,9 @@ grid* grid::moveBackward(){
  * Directly overrides grid values.
  * @param newCells - New value for board.
  */
-void grid::overrideGrid(std::vector<std::vector<bool>> newCells, int height, int width){
-    activeCells.clear();
+void grid::overrideGrid(std::vector<std::vector<bool>> newCells, std::vector<activeCell> newActiveCells, int height, int width){
     this->cells = newCells;
-    // Hopefully find some way to speed this up?
-    for (unsigned long int i = 0; i < cells.size(); ++i){
-        for (unsigned long int j = 0; j < cells[i].size(); ++j){
-            if (cells[i][j])
-                activeCells.push_back(activeCell{static_cast<int>(i), static_cast<int>(j)});
-        }
-    }
+    this->activeCells = newActiveCells;
     this->height = height;
     this->width = width;
 }

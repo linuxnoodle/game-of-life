@@ -32,7 +32,7 @@ class grid {
          * Setter for cells.
          * @param newCells - New value for board.
          */
-        void overrideGrid(std::vector<std::vector<bool>> newCells, int height, int width);
+        void overrideGrid(std::vector<std::vector<bool>> newCells, std::vector<activeCell> newActiveCells, int height, int width);
         void resetBoard();
         
         // Getters

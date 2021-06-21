@@ -29,7 +29,7 @@ make
 - [X] Autoplay.
 - [X] Darkmode.
 - [ ] Zoom in on the center instead of on the top-left corner.
-- [ ] Further optimizations for runtime. (possibly using an opengl texture for the grid?)
+- [X] Further optimizations for runtime. (possibly using an opengl texture for the grid?)
 - [ ] Mouse controls to drag grid.
 - [ ] Render text to display framerate.
 
