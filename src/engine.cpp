@@ -21,10 +21,10 @@ T boundaryAdd(T a, T b, T maximumValue, T minimumValue){
     }
 }
 
-void init(int width, int height, bool fullscreen, bool darkmode, grid *board){
+void init(int width, int height, bool fullscreen, bool darkmode){
     int flags = (fullscreen) ? SDL_WINDOW_FULLSCREEN : 0;
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0){
-        workingBoard = board;
+        workingBoard = new grid();
         screenWidth = width;
         screenHeight = height;
         isDarkmode = darkmode;
@@ -114,7 +114,16 @@ void update(float deltaTime){
                 if (mouseX > horizontalOffset && mouseX < horizontalOffset + (cellHorizontalSize * workingBoard->getWidth()) && mouseY > verticalOffset && mouseY < verticalOffset + (cellVerticalSize * workingBoard->getHeight())){
                     // Gets index of the cell that the mouse presses.
                     int posX = ((mouseX - horizontalOffset) - fmod((mouseX - horizontalOffset), cellHorizontalSize)) / cellHorizontalSize, posY = ((mouseY - verticalOffset) - (fmod(mouseY - verticalOffset, cellVerticalSize))) / cellVerticalSize;
-                    (*workingBoard->getCells())[posY][posX] = !(*workingBoard->getCells())[posY][posX];
+                    workingBoard->cells[posY][posX] = !workingBoard->cells[posY][posX];
+
+                    if (workingBoard->cells[posY][posX]){
+                        (workingBoard->activeCells.push_back(activeCell{posY, posX}));
+                    } else {
+                        for (unsigned long int i = 0; i < workingBoard->activeCells.size(); ++i){
+                            if (workingBoard->activeCells[i].posX == posX && workingBoard->activeCells[i].posY == posY)
+                                   workingBoard->activeCells.erase(workingBoard->activeCells.begin() + i);
+                        }
+                    }
                 }
             }
             break;
@@ -157,21 +166,16 @@ void drawCells(){
     else
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    std::vector<std::vector<bool>> boardCells = *workingBoard->getCells();
-    for (long unsigned int i = 0; i < boardCells.size(); ++i){
-        for (long unsigned int j = 0; j < boardCells[i].size(); ++j){
-            if (boardCells[i][j]){
+    std::vector<activeCell> activeCells = workingBoard->activeCells;
+    for (unsigned long int i = 0; i < activeCells.size(); ++i){ 
+        SDL_Rect rect;
 
-                SDL_Rect rect;
+        rect.x = activeCells[i].posX * cellHorizontalSize + horizontalOffset;
+        rect.y = activeCells[i].posY * cellVerticalSize + verticalOffset;
+        rect.h = cellVerticalSize;
+        rect.w = cellHorizontalSize;
 
-                rect.x = j * cellHorizontalSize + horizontalOffset;
-                rect.y = i * cellVerticalSize + verticalOffset;
-                rect.h = cellVerticalSize;
-                rect.w = cellHorizontalSize;
-
-                SDL_RenderFillRect(renderer, &rect);
-            }
-        }
+        SDL_RenderFillRect(renderer, &rect);
     }
 }
 
@@ -183,7 +187,7 @@ void render(){
     
     // Draws background color.
     SDL_RenderClear(renderer);
-
+    
     drawGrid();
     drawCells();
 

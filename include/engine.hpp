@@ -27,7 +27,7 @@ extern bool isRunning;
  * @param darkmode - Changes color scheme.
  * @param board - Board from which data is displayed.
  */
-void init(int width, int height, bool fullscreen, bool darkmode, grid *board);
+void init(int width, int height, bool fullscreen, bool darkmode);
 
 /**
  * Updates entities.

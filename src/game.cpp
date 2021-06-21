@@ -18,7 +18,8 @@ grid::grid(){
  * Takes the current state of the board, and returns what the board would look like at its next step.
  * @return Next board state.
  */
-std::vector<std::vector<bool>> grid::getNextBoardState(){
+grid* grid::getNextBoardState(){
+    grid *nextGrid = new grid();
     std::vector<std::vector<bool>> nextState(height, std::vector<bool>(width, false)); 
     for (int i = 0; i < height; ++i){
         for (int j = 0; j < width; j++){
@@ -37,13 +38,17 @@ std::vector<std::vector<bool>> grid::getNextBoardState(){
                 nextState[i][j] = false;
             } else if (!cells[i][j] && neighborSum == 3){
                 nextState[i][j] = true;
+                nextGrid->activeCells.push_back(activeCell{i, j});
             } else {
                 nextState[i][j] = cells[i][j];
+                if (nextState[i][j])
+                    nextGrid->activeCells.push_back(activeCell{i, j});
             }
         }
     }
 
-    return nextState;
+    nextGrid->overrideGrid(nextState, height, width);
+    return nextGrid;
 }
 
 void grid::resetBoard(){
@@ -54,8 +59,8 @@ void grid::resetBoard(){
 }
 
 grid* grid::moveForward(){
-    grid *nextGrid = new grid(width, height);
-    nextGrid->overrideGrid(getNextBoardState(), height, width);
+    grid *nextGrid;
+    nextGrid = getNextBoardState();
 
     this->nextState = nextGrid;
     nextGrid->previousState = this;
@@ -76,7 +81,15 @@ grid* grid::moveBackward(){
  * @param newCells - New value for board.
  */
 void grid::overrideGrid(std::vector<std::vector<bool>> newCells, int height, int width){
+    activeCells.clear();
     this->cells = newCells;
+    // Hopefully find some way to speed this up?
+    for (unsigned long int i = 0; i < cells.size(); ++i){
+        for (unsigned long int j = 0; j < cells[i].size(); ++j){
+            if (cells[i][j])
+                activeCells.push_back(activeCell{static_cast<int>(i), static_cast<int>(j)});
+        }
+    }
     this->height = height;
     this->width = width;
 }
