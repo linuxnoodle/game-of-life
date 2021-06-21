@@ -12,7 +12,9 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_log.h>
 #include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_ttf.h>
 #include <cstdlib>
 #include <cstdint>
 #include <ctgmath>
@@ -34,5 +36,5 @@ void init(int width, int height, bool fullscreen, bool darkmode);
  * @param deltaTime - Delay between frames, used to make movement framerate-independent.
  */
 void update(float deltaTime);
-void render();
+void render(float frameRate);
 void clean();
