@@ -21,6 +21,9 @@ grid::grid(){
 grid* grid::getNextBoardState(){
     grid *nextGrid = new grid();
     std::vector<std::vector<bool>> nextState(height, std::vector<bool>(width, false)); 
+   
+    // Pretty shoddy implementation of multithreading, but this is the only approach that doesn't randomly segfault.
+    #pragma omp parallel for 
     for (int i = 0; i < height; ++i){
         for (int j = 0; j < width; j++){
             // Sums the values of the all living cells in order to determine whether the current cell will live or die (with the appropriate masks).
@@ -46,7 +49,7 @@ grid* grid::getNextBoardState(){
             }
         }
     }
-
+    
     nextGrid->overrideGrid(nextState, nextGrid->activeCells, height, width);
     return nextGrid;
 }

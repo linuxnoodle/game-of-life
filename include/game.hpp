@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <cstddef>
+#include <thread>
 
 struct activeCell {
     int posY = 0, posX = 0;
@@ -10,7 +11,7 @@ struct activeCell {
 class grid {
     private:
         grid *nextState = NULL, *previousState = NULL;
-        int height = 1024, width = 1024;
+        int height = 4096, width = 4096;
 
     public:
         std::vector<std::vector<bool>> cells;

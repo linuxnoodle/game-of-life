@@ -1,7 +1,7 @@
 PROJECT:=game-of-life
 
 CC:=g++
-LDFLAGS=-O2 -Wall -O2 -std=c++17 -lSDL2 -lSDL2_ttf
+LDFLAGS=-O2 -Wall -O2 -std=c++17 -lSDL2 -lSDL2_ttf -fopenmp
 UNAME:=$(shell uname)
 
 SRCDIR:=src
